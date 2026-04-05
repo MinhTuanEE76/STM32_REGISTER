@@ -1,0 +1,47 @@
+# =========================
+# Build folders (Keil)
+# =========================
+Objects/
+Listings/
+DebugConfig/
+
+# =========================
+# Auto-generated (CMSIS / RTE)
+# =========================
+RTE/
+
+# =========================
+# Keil user / local config
+# =========================
+*.uvgui.*
+*.uvoptx
+
+# =========================
+# Build output files
+# =========================
+*.o
+*.d
+*.axf
+*.elf
+*.hex
+*.bin
+*.map
+
+# =========================
+# Logs & temp
+# =========================
+*.log
+*.tmp
+*.bak
+*.swp
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Optional (nếu không dùng)
+# =========================
+EventRecorderStub.scvd
