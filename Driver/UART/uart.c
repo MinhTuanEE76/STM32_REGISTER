@@ -154,7 +154,6 @@ void UART_Transmit_IT(USART_Handle_TypeDef *huart, uint8_t *data,uint16_t len){
 		huart->Instance->SR &= ~USART_SR_TC;
 		huart->Instance->CR1 |= USART_CR1_TXEIE;
 	
-		//start trigger
 		huart->Instance->DR = *(huart->pTxBuffer++);
 		huart->TxCount--;
 		

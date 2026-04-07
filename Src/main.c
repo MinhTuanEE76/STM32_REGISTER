@@ -25,6 +25,7 @@ USART_Handle_TypeDef huart = {
 		.StopBits = UART_STOPBITS_1,
 		.WordLength = UART_WORDLENGTH_8B,
 		.tx_it = true,
+		.rx_it = true,
 		.TxCallback = TX_Callback_Complete
 };
 void TX_Callback_Complete(void){
@@ -94,8 +95,10 @@ int main(){
 				}
 //				UART_ReceiveData(&huart,(uint8_t*)rx_buffer);
 //				UART_SendData(&huart,(uint8_t*)rx_buffer,strlen(rx_buffer));
+				UART_SendData(&huart,(uint8_t*)(huart.RxBuffer.buffer),strlen((char*)(huart.RxBuffer.buffer)));
 				UART_Transmit_IT(&huart,(uint8_t*)msg,strlen(msg));
-				Delay_ms(2000);
+				
+				Delay_ms(3000);
     }
 }
 

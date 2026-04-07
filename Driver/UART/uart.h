@@ -118,6 +118,7 @@ typedef struct{
 	
 		//callback
 		void (*TxCallback)(void);
+		void (*RxCallback)(void);
 }USART_Handle_TypeDef;
 
 // ================================================================
@@ -149,6 +150,7 @@ void UART_Transmit_IT(USART_Handle_TypeDef *huart, uint8_t *data,uint16_t len);
 //Receive
 uint8_t UART_ReceiveByte(USART_Handle_TypeDef *huart);
 void UART_ReceiveData(USART_Handle_TypeDef *huart , uint8_t *buffer);
+
 
 
 void UART_ClearError(USART_Handle_TypeDef *huart);
