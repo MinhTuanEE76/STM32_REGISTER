@@ -154,7 +154,8 @@ void UART_ReceiveData(USART_Handle_TypeDef *huart , uint8_t *buffer);
 void UART_ClearError(USART_Handle_TypeDef *huart);
 bool UART_HasError(USART_Handle_TypeDef *huart);
 
-/*   */
+/*  Irq handler */
+void UART_IRQ_HandlerCommon(USART_Handle_TypeDef *huart);
 
 
 #endif

@@ -8,10 +8,15 @@
 #include "timer.h"
 #include "uart.h"
 
+
+uint32_t callback_flag = 0;
 uint32_t test = 1111111;
 volatile uint32_t led_flag = 0 ;
 char rx_buffer[1024];
 char msg[] = "Hello from STM32F407VET6TR - Build by bare-metal\r\n";
+
+void TX_Callback_Complete(void);
+
 USART_Handle_TypeDef huart = {
 		.Instance = USART1		,
 		.BaudRate = 115200		,
@@ -19,9 +24,14 @@ USART_Handle_TypeDef huart = {
 		.Parity  	= UART_PARITY_NONE,
 		.StopBits = UART_STOPBITS_1,
 		.WordLength = UART_WORDLENGTH_8B,
+		.tx_it = true,
+		.TxCallback = TX_Callback_Complete
 };
-
-
+void TX_Callback_Complete(void){
+		callback_flag = 1;
+		char msg[] = "UART Transmition Complete!!!!\r\n";
+		UART_SendData(&huart,(uint8_t*)msg,strlen(msg));
+}
 
 void SetFlag(void){
 	led_flag = 1;
@@ -82,10 +92,17 @@ int main(){
 					char msg[] = "Button is pressed\r\n";
 					UART_SendData(&huart,(uint8_t*)msg,strlen(msg));
 				}
-				UART_ReceiveData(&huart,(uint8_t*)rx_buffer);
-				UART_SendData(&huart,(uint8_t*)rx_buffer,strlen(rx_buffer));
-				UART_SendData(&huart,(uint8_t*)msg,strlen(msg));
-				GPIO_TogglePin(GPIOA,GPIO_PIN_7);
-				Delay_ms(1000);
+//				UART_ReceiveData(&huart,(uint8_t*)rx_buffer);
+//				UART_SendData(&huart,(uint8_t*)rx_buffer,strlen(rx_buffer));
+				UART_Transmit_IT(&huart,(uint8_t*)msg,strlen(msg));
+				Delay_ms(2000);
     }
 }
+
+
+/*=============================IRQ Handler=================================*/
+
+void USART1_IRQHandler(void){
+	UART_IRQ_HandlerCommon(&huart);
+}
+

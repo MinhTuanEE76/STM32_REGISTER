@@ -150,12 +150,15 @@ void UART_SendData(USART_Handle_TypeDef *huart, uint8_t *data, uint16_t len){
 void UART_Transmit_IT(USART_Handle_TypeDef *huart, uint8_t *data,uint16_t len){
 		huart->pTxBuffer = data;
 		huart->TxCount 	 = len;
+	
+		huart->Instance->SR &= ~USART_SR_TC;
+		huart->Instance->CR1 |= USART_CR1_TXEIE;
+	
 		//start trigger
 		huart->Instance->DR = *(huart->pTxBuffer++);
 		huart->TxCount--;
 		
-		//Enable TXEIE
-		huart->Instance->CR1 |= USART_CR1_TXEIE;
+		
 }
 /*------------------------------------Receive Function---------------------------------------*/
 
@@ -183,7 +186,7 @@ void UART_ReceiveData(USART_Handle_TypeDef *huart , uint8_t *buffer){
 //==========================================
 void UART_IRQ_HandlerCommon(USART_Handle_TypeDef *huart){
 		//RX
-		if(huart->Instance->SR & USART_SR_RXNE && huart->Instance->CR1 & USART_CR1_RXNEIE){
+		if((huart->Instance->SR & USART_SR_RXNE) && (huart->Instance->CR1 & USART_CR1_RXNEIE)){
 				uint8_t data = huart->Instance->DR;//read DR->automatically clear RXNE	
 				//push data
 				RingBuffer_Write(&(huart->RxBuffer),data);
@@ -201,11 +204,21 @@ void UART_IRQ_HandlerCommon(USART_Handle_TypeDef *huart){
 				}
 		}
 		//Transmit Complete
-		if(huart->Instance->SR & USART_SR_TC && huart->Instance->CR1 & USART_CR1_TCIE){
+		if((huart->Instance->SR & USART_SR_TC) && (huart->Instance->CR1 & USART_CR1_TCIE)){
 				huart->Instance->CR1 &= ~USART_CR1_TCIE;//clear TCIE
+				huart->Instance->SR &= ~USART_SR_TC;
 				if(huart->TxCallback){
-					huart->TxCallback();
+ 					huart->TxCallback();
 				}
 		}
 }
+
+
+
+
+
+
+
+
+
 //Note: call void USART1_IRQHandler if use interrupt and inside call UART_IRQHandlerCommon 
