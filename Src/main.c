@@ -86,7 +86,7 @@ int main(){
 								GPIO_SPEED_LOW);
 		GPIO_TogglePin(GPIOA,GPIO_PIN_6);
 		EXTI_Init(&cfg);
-//		TIM2_Init(&TIM_cfg);
+		TIM2_Init(&TIM_cfg);
     while(1){
 				if(led_flag) {
 					led_flag = 0;

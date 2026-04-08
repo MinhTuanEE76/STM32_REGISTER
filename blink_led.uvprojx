@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\Driver\RCC;.\Driver\GPIO;.\Driver\AFIO;.\Driver\EXTI;.\Driver\SYSCFG;.\Driver\TIMER;.\Driver\UART;.\Driver\NVIC</IncludePath>
+              <IncludePath>.\Driver\RCC;.\Driver\GPIO;.\Driver\AFIO;.\Driver\EXTI;.\Driver\SYSCFG;.\Driver\TIMER;.\Driver\UART;.\Driver\NVIC;.\Driver\I2C</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -467,6 +467,16 @@
               <FileName>nvic.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Driver\NVIC\nvic.h</FilePath>
+            </File>
+            <File>
+              <FileName>i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\I2C\i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>i2c.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Driver\I2C\i2c.h</FilePath>
             </File>
           </Files>
         </Group>
