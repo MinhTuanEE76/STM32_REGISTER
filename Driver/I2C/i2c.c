@@ -28,7 +28,9 @@ static uint8_t I2C_WaitFlag(I2C_Handle_t *hi2c,uint32_t flag,uint32_t timeout){
 //clear ADDR
 static void I2C_ClearADDR(I2C_Handle_t *hi2c){
 	//read sr1 and then read sr2
-	uint32_t dummy = hi2c->Instance->SR1 | hi2c->Instance->SR2;
+	uint32_t dummy = hi2c->Instance->SR1;
+	dummy = hi2c->Instance->SR2;
+	(void)dummy;
 }
 //check bus
 static uint8_t I2C_CheckStatus(I2C_Handle_t *hi2c){
@@ -139,8 +141,7 @@ uint8_t I2C_Master_Transmit(I2C_Handle_t *hi2c, uint8_t slave_addr, uint8_t *pDa
 	} 
 	//clear ADDR
 	I2C_ClearADDR(hi2c);
-	//send data - n_byte + check ack
-	
+	//send data
 	for (uint16_t i = 0; i < Size; i++){
         if (I2C_WaitFlag(hi2c, I2C_SR1_TXE, I2C_MAX_TIMEOUT) != I2C_OK)
         {
@@ -159,3 +160,82 @@ uint8_t I2C_Master_Transmit(I2C_Handle_t *hi2c, uint8_t slave_addr, uint8_t *pDa
 	I2C_Generate_Stop_Condition(hi2c);
 	return I2C_OK;
 }
+
+/*--------------------- Master Receive----------------------*/
+uint8_t I2C_Master_Receive(I2C_Handle_t *hi2c, uint8_t slave_addr, uint8_t *pData, uint16_t len)
+{
+    if (hi2c == NULL || hi2c->Instance == NULL || pData == NULL || len == 0)
+        return I2C_ERROR;
+
+    I2C_TypeDef *I2Cx = hi2c->Instance;
+
+    //check bus
+    if (I2C_CheckStatus(hi2c) == I2C_BUSY)
+        return I2C_BUSY;
+
+    //Generate START
+    I2C_Generate_Start_Condition(hi2c);
+    if (I2C_WaitFlag(hi2c, I2C_SR1_SB, I2C_MAX_TIMEOUT) != I2C_OK){
+        I2C_Generate_Stop_Condition(hi2c);
+        return I2C_ERROR;
+    }
+
+    //Slave Address + Read (1)
+    I2Cx->DR = (slave_addr << 1) | I2C_READ;
+
+    if (I2C_WaitFlag(hi2c, I2C_SR1_ADDR, I2C_MAX_TIMEOUT) != I2C_OK){
+        I2C_Generate_Stop_Condition(hi2c);
+        return I2C_ERROR;       
+    }
+
+		//Receive data
+    if (len == 1)
+    {
+        //1 byte
+				
+        I2Cx->CR1 &= ~I2C_CR1_ACK;           // NACK before read byte
+				I2C_ClearADDR(hi2c);
+
+        if (I2C_WaitFlag(hi2c, I2C_SR1_RXNE, I2C_MAX_TIMEOUT) != I2C_OK)
+        {
+            I2C_Generate_Stop_Condition(hi2c);
+            return I2C_ERROR;
+        }
+
+        pData[0] = I2Cx->DR;
+
+        I2C_Generate_Stop_Condition(hi2c);   // Stop
+    }
+    else
+    {
+				I2C_ClearADDR(hi2c);//clear before reading
+        //n byte
+        for (uint16_t i = 0; i < len -3; i++){//remain 3 bytes
+					if(I2C_WaitFlag(hi2c,I2C_SR1_RXNE,I2C_MAX_TIMEOUT) != I2C_OK){
+						return I2C_ERROR;
+					}
+					pData[i] = I2Cx->DR;
+				}//end step1
+				if(I2C_WaitFlag(hi2c,I2C_SR1_BTF,I2C_MAX_TIMEOUT) != I2C_OK){
+					return I2C_ERROR;
+				}//wait byte tranferred
+				//[len-3]->DR 
+				//NACK
+				I2Cx->CR1 &= ~I2C_CR1_ACK;
+				//read N-2(len -3)
+				pData[len-3] = I2Cx->DR;//N-1 or len-2 in DR
+				if(I2C_WaitFlag(hi2c,I2C_SR1_BTF,I2C_MAX_TIMEOUT ) != I2C_OK){
+					return I2C_ERROR;
+				}//wait byte tranferred
+				//stop
+				I2C_Generate_Stop_Condition(hi2c);
+				pData[len-2] = I2Cx->DR;//N-1
+				if(I2C_WaitFlag(hi2c, I2C_SR1_RXNE, I2C_MAX_TIMEOUT) != I2C_OK) return I2C_ERROR;
+				pData[len-1] = I2Cx->DR;//N
+    }
+		
+		I2Cx->CR1 |= I2C_CR1_ACK; 
+    return I2C_OK;
+    return I2C_OK;
+}
+

@@ -133,7 +133,7 @@ uint8_t I2C_Master_Transmit(I2C_Handle_t *hi2c, uint8_t slave_addr, uint8_t *pDa
 
 
 //Receive
-uint8_t I2C_Master_Read (I2C_Handle_t *hi2c, uint8_t slave_addr, uint8_t *pData, uint16_t Size);
+uint8_t I2C_Master_Receive(I2C_Handle_t *hi2c, uint8_t slave_addr, uint8_t *pData, uint16_t len);
 
 /*  */
 
