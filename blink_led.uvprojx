@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\Driver\RCC;.\Driver\GPIO;.\Driver\AFIO;.\Driver\EXTI;.\Driver\SYSCFG;.\Driver\TIMER;.\Driver\UART;.\Driver\NVIC;.\Driver\I2C</IncludePath>
+              <IncludePath>.\Driver\RCC;.\Driver\GPIO;.\Driver\AFIO;.\Driver\EXTI;.\Driver\SYSCFG;.\Driver\TIMER;.\Driver\UART;.\Driver\NVIC;.\Driver\I2C;.\EEPROM_AT24C256</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -477,6 +477,21 @@
               <FileName>i2c.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Driver\I2C\i2c.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>at24c256.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\EEPROM_AT24C256\at24c256.c</FilePath>
+            </File>
+            <File>
+              <FileName>at24c256.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\EEPROM_AT24C256\at24c256.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -7,8 +7,10 @@
 #include "exti.h"
 #include "timer.h"
 #include "uart.h"
+#include "i2c.h"
+#include "at24c256.h"
 
-
+uint8_t i2c_data[64];
 uint32_t callback_flag = 0;
 uint32_t test = 1111111;
 volatile uint32_t led_flag = 0 ;
@@ -17,6 +19,11 @@ char msg[] = "Hello from STM32F407VET6TR - Build by bare-metal\r\n";
 
 void TX_Callback_Complete(void);
 
+I2C_Handle_t hi2c1 = {
+	.Instance = I2C1,
+	.AddressingMode = I2C_ADDRESS_7BIT,
+	.Timing = I2C_FAST_MODE
+};
 USART_Handle_TypeDef huart = {
 		.Instance = USART1		,
 		.BaudRate = 115200		,
@@ -64,8 +71,8 @@ int main(){
 		GPIO_AF_Init(&USART1_TX_PA9,GPIO_PUSH_PULL,GPIO_NO_PULL,GPIO_SPEED_MEDIUM);
 		GPIO_AF_Init(&USART1_RX_PA10,GPIO_PUSH_PULL,GPIO_NO_PULL,GPIO_SPEED_MEDIUM);
 		UART_Init(&huart);
-	
-		volatile uint32_t rcc_ahb1 = RCC->AHB1ENR.REG;
+		I2C_Init(&hi2c1);
+
 	
 		GPIO_Config(GPIOA,GPIO_PIN_6,
 								GPIO_MODE_OUTPUT,
@@ -88,17 +95,11 @@ int main(){
 		EXTI_Init(&cfg);
 		TIM2_Init(&TIM_cfg);
     while(1){
-				if(led_flag) {
-					led_flag = 0;
-					char msg[] = "Button is pressed\r\n";
-					UART_SendData(&huart,(uint8_t*)msg,strlen(msg));
-				}
-//				UART_ReceiveData(&huart,(uint8_t*)rx_buffer);
-//				UART_SendData(&huart,(uint8_t*)rx_buffer,strlen(rx_buffer));
-				UART_SendData(&huart,(uint8_t*)(huart.RxBuffer.buffer),strlen((char*)(huart.RxBuffer.buffer)));
-				UART_Transmit_IT(&huart,(uint8_t*)msg,strlen(msg));
-				
-				Delay_ms(3000);
+				AT24C256_Write_Buffer(&hi2c1,0,(uint8_t*)msg,strlen(msg));
+				Delay_ms(10);
+				AT24C256_Read_Buffer(&hi2c1,0,i2c_data,6);
+				UART_SendData(&huart,(uint8_t*)msg,6);
+ 				Delay_ms(2000);
     }
 }
 

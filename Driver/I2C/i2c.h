@@ -122,8 +122,8 @@ typedef struct{
 #define I2C_WRITE				0
 #define I2C_READ				1U
 
-
-
+#define I2C_FAST_MODE 				400000UL
+#define I2C_STANDARD_MODE 		100000UL
 
 /* ====================== Function Prototypes ====================== */
 void I2C_Init(I2C_Handle_t *hi2c);
