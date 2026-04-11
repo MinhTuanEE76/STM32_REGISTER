@@ -2,8 +2,8 @@
 #define __RCC_H
 
 #include <stdint.h>
-#include "rcc.h"
 #include <stdio.h>
+#include "syscfg.h"
 
 #define SYSCLK			168000000UL
 

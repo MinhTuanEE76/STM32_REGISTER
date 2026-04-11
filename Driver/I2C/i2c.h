@@ -6,25 +6,25 @@
 
 /*------------------------------mapping address-------------------*/
 typedef struct{
-	uint32_t CR1; //0x00
-	uint32_t CR2;	//0x04
-	uint32_t OAR1;//0x08
-	uint32_t OAR2;//0x0C
-	uint32_t DR;  //0x10
-	uint32_t SR1; //0x14
-	uint32_t SR2;	//0x18
-	uint32_t CCR; //0x1C
-	uint32_t TRISE;//0x20
-	uint32_t FLTR;//0x24
+	volatile uint32_t CR1; //0x00
+	volatile uint32_t CR2;	//0x04
+	volatile uint32_t OAR1;//0x08
+	volatile uint32_t OAR2;//0x0C
+	volatile uint32_t DR;  //0x10
+	volatile uint32_t SR1; //0x14
+	volatile uint32_t SR2;	//0x18
+	volatile uint32_t CCR; //0x1C
+	volatile uint32_t TRISE;//0x20
+	volatile uint32_t FLTR;//0x24
 }I2C_TypeDef;
 
 #define I2C1_BASE_ADDRESS 			0x40005400UL
 #define I2C2_BASE_ADDRESS 			0x40005800UL
 #define I2C3_BASE_ADDRESS 			0x40005C00UL
 
-#define I2C1				((I2C_TypeDef*)I2C1_BASE_ADDRESS)
-#define I2C2				((I2C_TypeDef*)I2C2_BASE_ADDRESS)
-#define I2C3				((I2C_TypeDef*)I2C3_BASE_ADDRESS)
+#define I2C1				((volatile I2C_TypeDef*)I2C1_BASE_ADDRESS)
+#define I2C2				((volatile I2C_TypeDef*)I2C2_BASE_ADDRESS)
+#define I2C3				((volatile I2C_TypeDef*)I2C3_BASE_ADDRESS)
 
 /* ========================== I2C Bit Definitions ========================== */
 
@@ -105,12 +105,12 @@ typedef struct{
 #define I2C_RISING_TIME_FAST   300UL
 //Handle i2c
 typedef struct{
-	I2C_TypeDef *Instance;//pointer to reg
+	volatile I2C_TypeDef *Instance;//pointer to reg
 	
 	uint8_t AddressingMode;//7bit or 10 bit
 	uint32_t Timing ; //standard mode(<100khz) or fast mode (<400khz)
 	uint16_t Address;
-}I2C_Handle_t;
+}I2C_Handle_TypeDef;
 
 #define I2C_OK          0
 #define I2C_ERROR       1U
@@ -120,24 +120,21 @@ typedef struct{
 #define I2C_MAX_TIMEOUT 0xFFUL
 
 #define I2C_WRITE				0
-#define I2C_READ				1U
+#define I2C_READ				1
 
 #define I2C_FAST_MODE 				400000UL
 #define I2C_STANDARD_MODE 		100000UL
 
 /* ====================== Function Prototypes ====================== */
-void I2C_Init(I2C_Handle_t *hi2c);
-
+void I2C_Init(volatile I2C_Handle_TypeDef *hi2c);
+void I2C_START(volatile I2C_Handle_TypeDef *hi2c);
+void I2C_STOP(volatile I2C_Handle_TypeDef *hi2c);
 //Transmit
-uint8_t I2C_Master_Transmit(I2C_Handle_t *hi2c, uint8_t slave_addr, uint8_t *pData, uint16_t Size);
-
+uint8_t I2C_Master_Transmit(volatile I2C_Handle_TypeDef *hi2c, uint8_t slave_addr, uint8_t *pData, uint16_t len);
 
 //Receive
-uint8_t I2C_Master_Receive(I2C_Handle_t *hi2c, uint8_t slave_addr, uint8_t *pData, uint16_t len);
+uint8_t I2C_Master_Receive(volatile I2C_Handle_TypeDef *hi2c, uint8_t slave_addr, uint8_t *pData, uint16_t len);
 
 /*  */
-
-
-
 
 #endif

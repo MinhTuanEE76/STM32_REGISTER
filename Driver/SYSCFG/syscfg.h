@@ -79,6 +79,33 @@ typedef struct{
 				}CMPCR; //0x20
 }SYSCFG_TypeDef;
 
+#define SYSCFG ((volatile SYSCFG_TypeDef*)0x40013800UL)
+
+typedef struct
+{
+    volatile uint32_t CR;    // Control register
+    volatile uint32_t CSR;   // Control/status register
+} PWR_TypeDef;
+
+
+
+#define PWR_BASE   0x40007000UL
+#define PWR        ((PWR_TypeDef *) PWR_BASE)
+
+typedef struct
+{
+    volatile uint32_t ACR;       // 0x00 Access control
+    volatile uint32_t KEYR;      // 0x04 Key register
+    volatile uint32_t OPTKEYR;   // 0x08 Option key
+    volatile uint32_t SR;        // 0x0C Status
+    volatile uint32_t CR;        // 0x10 Control
+    volatile uint32_t OPTCR;     // 0x14 Option control
+} FLASH_TypeDef;
+
+#define FLASH_BASE   0x40023C00UL
+#define FLASH        ((FLASH_TypeDef *) FLASH_BASE)
+
+
 
 
 
@@ -118,7 +145,8 @@ typedef struct{
 #define AF_EVENTOUT         AF15
 
 
-#define SYSCFG ((volatile SYSCFG_TypeDef*)0x40013800UL)
+
+
 
 
 //==========================Function Prototype======================

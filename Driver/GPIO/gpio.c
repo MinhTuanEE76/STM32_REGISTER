@@ -66,7 +66,7 @@ void GPIO_AF_Init(const GPIO_AF_TypeDef *Af, uint8_t Type, uint8_t Pull, uint8_t
 		
 		uint8_t position;
 		for(position = 0 ; position < 16; position++){
-			if(Af->Pin & (1 << position)){
+  			if(Af->Pin & (1 << position)){
 				break;
 			}
 		}

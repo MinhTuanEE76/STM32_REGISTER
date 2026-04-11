@@ -2,8 +2,26 @@
 #define __TIM_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "rcc.h"
 #include "exti.h"
+
+/*==================== TIM CR1 ====================*/
+#define TIM_CR1_CEN        (1U << 0)
+#define TIM_CR1_UDIS       (1U << 1)
+#define TIM_CR1_URS        (1U << 2)
+#define TIM_CR1_OPM        (1U << 3)
+#define TIM_CR1_DIR        (1U << 4)
+#define TIM_CR1_ARPE       (1U << 7)
+
+/*==================== TIM DIER ====================*/
+#define TIM_DIER_UIE       (1U << 0)
+
+/*==================== TIM SR ====================*/
+#define TIM_SR_UIF         (1U << 0)
+
+/*==================== TIM EGR ====================*/
+#define TIM_EGR_UG         (1U << 0)
 
 #define ADD_BASE_TIM2 			0x40000000UL
 #define ADD_BASE_TIM3 			0x40000400UL
@@ -38,6 +56,7 @@ typedef struct{
 typedef struct{
 		uint32_t PSC;
 		uint32_t ARR;
+		bool it_flag;
 		void (*Callback)(void);
 } TIM_Config_t;
 
