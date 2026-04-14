@@ -82,7 +82,7 @@ void RCC_Config_168Mhz(void)
     while (!(RCC->CR.REG & (1 << 25)));       // Wait PLLRDY
 
     //Select PLL as SYSCLK 
-    RCC->CFGR.REG &= ~(0x3 << 0);
+    RCC->CFGR.REG &= ~(0x3 << 0); 
     RCC->CFGR.REG |=  (2 << 0);               // SW = PLL
 
     while (((RCC->CFGR.REG >> 2) & 0x3) != 2); // Wait SWS = PLL

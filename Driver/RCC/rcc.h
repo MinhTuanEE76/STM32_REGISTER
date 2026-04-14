@@ -290,7 +290,6 @@ typedef struct{
 #define FLASH_ACR *((volatile uint32_t*)FLASH_ADD_BASE)
 	
 			
-
 /*----------------funtion prototype---------------------*/
 void RCC_Config_168Mhz(void);
 //enable GPIO
